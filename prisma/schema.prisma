@@ -16,10 +16,11 @@ model User {
 }
 
 model Score {
-  id       Int    @id @default(autoincrement())
-  type     String
-  targetId String
-  score    Int
-  author   User?  @relation(fields: [authorId], references: [id])
-  authorId Int?
+  id        Int      @id @default(autoincrement())
+  type      String
+  targetId  String
+  score     Int
+  createdAt DateTime @default(now())
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
 }
