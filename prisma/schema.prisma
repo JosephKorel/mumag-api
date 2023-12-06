@@ -8,18 +8,21 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  email  String  @unique
-  name   String
-  genres String  @default("")
-  scores Score[]
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  name          String
+  avatarUrl     String   @default("")
+  genres        String   @default("")
+  backgroundUrl String   @default("")
+  lastUpdatedAt DateTime @default(now())
+  ratings       Rating[]
 }
 
-model Score {
+model Rating {
   id        Int      @id @default(autoincrement())
   type      String
-  targetId  String
-  score     Int
+  spotifyId String
+  rating    Int
   createdAt DateTime @default(now())
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?

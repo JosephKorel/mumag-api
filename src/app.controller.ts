@@ -8,15 +8,16 @@ import {
   Query,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
-import { EditScore, ScoreService } from './score/score.service';
-import { UpdateGenreInput } from './user/models';
+import { EditRating, GetRatingsParam } from './rating/models';
+import { RatingService } from './rating/rating.service';
+import { UpdateGenreInput, UpdateUser } from './user/models';
 import { UserService } from './user/user.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly userService: UserService,
-    private readonly scoreService: ScoreService,
+    private readonly ratingService: RatingService,
   ) {}
 
   // User
@@ -30,6 +31,11 @@ export class AppController {
     return this.userService.getUser(params);
   }
 
+  @Put('user')
+  async updateUser(@Body() params: UpdateUser): Promise<User> {
+    return this.userService.updateUser(params);
+  }
+
   @Put('user/update-genres')
   async updateGenres(
     @Body() params: UpdateGenreInput,
@@ -37,21 +43,26 @@ export class AppController {
     return this.userService.updateGenres(params);
   }
 
-  // Score
-  @Post('score')
-  async addScore(@Body() params: Prisma.ScoreCreateInput): Promise<void> {
-    this.scoreService.addScore(params);
+  // Rating
+  @Post('rating')
+  async addRating(@Body() params: Prisma.RatingCreateInput): Promise<void> {
+    this.ratingService.addRating(params);
   }
 
-  @Put('score')
-  async editScore(@Body() params: EditScore): Promise<void> {
-    this.scoreService.editScore(params);
+  @Get('rating/user-ratings')
+  async getUserRatings(@Body() params: GetRatingsParam): Promise<void> {
+    this.ratingService.getUserRatings(params);
   }
 
-  @Delete('score')
-  async deleteScore(
-    @Body() params: Prisma.ScoreWhereUniqueInput,
+  @Put('rating')
+  async editRating(@Body() params: EditRating): Promise<void> {
+    this.ratingService.editRating(params);
+  }
+
+  @Delete('rating')
+  async deleteRating(
+    @Body() params: Prisma.RatingWhereUniqueInput,
   ): Promise<void> {
-    this.scoreService.deleteScore(params);
+    this.ratingService.deleteRating(params);
   }
 }
