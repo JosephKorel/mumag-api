@@ -10,6 +10,11 @@ import {
 import { Prisma, User } from '@prisma/client';
 import { EditRating, GetRatingsParam } from './rating/models';
 import { RatingService } from './rating/rating.service';
+import {
+  DeleteSuggestionParams,
+  UpdateSuggestionParams,
+} from './suggestion/models';
+import { SuggestionService } from './suggestion/suggestion.service';
 import { UpdateGenreInput, UpdateUser } from './user/models';
 import { UserService } from './user/user.service';
 
@@ -18,6 +23,7 @@ export class AppController {
   constructor(
     private readonly userService: UserService,
     private readonly ratingService: RatingService,
+    private readonly suggestionService: SuggestionService,
   ) {}
 
   // User
@@ -64,5 +70,27 @@ export class AppController {
     @Body() params: Prisma.RatingWhereUniqueInput,
   ): Promise<void> {
     this.ratingService.deleteRating(params);
+  }
+
+  // Suggestion
+  @Post('suggestion')
+  async insertSuggestion(
+    @Body() params: Prisma.SuggestionCreateInput,
+  ): Promise<void> {
+    this.suggestionService.insertSuggestion(params);
+  }
+
+  @Put('suggestion')
+  async updateSuggestion(
+    @Body() params: UpdateSuggestionParams,
+  ): Promise<void> {
+    this.suggestionService.updateSuggestion(params);
+  }
+
+  @Delete('suggestion')
+  async deleteSuggestion(
+    @Body() params: DeleteSuggestionParams,
+  ): Promise<void> {
+    this.suggestionService.deleteSuggestion(params);
   }
 }

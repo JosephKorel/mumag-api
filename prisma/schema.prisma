@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  name          String
-  avatarUrl     String   @default("")
-  genres        String   @default("")
-  backgroundUrl String   @default("")
-  lastUpdatedAt DateTime @default(now())
-  ratings       Rating[]
+  id                  Int          @id @default(autoincrement())
+  email               String       @unique
+  name                String
+  avatarUrl           String       @default("")
+  genres              String       @default("")
+  backgroundUrl       String       @default("")
+  lastUpdatedAt       DateTime     @default(now())
+  ratings             Rating[]
+  madeSuggestions     Suggestion[] @relation("suggestedTo")
+  receivedSuggestions Suggestion[] @relation("suggestedBy")
 }
 
 model Rating {
@@ -26,4 +28,14 @@ model Rating {
   createdAt DateTime @default(now())
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+}
+
+model Suggestion {
+  id                Int    @id @default(autoincrement())
+  suggestedBy       User?  @relation("suggestedBy", fields: [suggestedByUserId], references: [id])
+  suggestedByUserId Int?
+  suggestedTo       User?  @relation("suggestedTo", fields: [suggestedToUserId], references: [id])
+  suggestedToUserId Int?
+  spotifyId         String
+  rating            Int?
 }
