@@ -13,11 +13,16 @@ export class SuggestionService {
     });
   }
 
-  async updateSuggestion(params: UpdateSuggestionParams): Promise<void> {
-    await this.prisma.suggestion.update({
+  async updateSuggestion(
+    params: UpdateSuggestionParams,
+  ): Promise<Record<string, unknown>> {
+    const onUpdate = await this.prisma.suggestion.update({
       where: { id: params.suggestionId },
       data: { rating: params.rating },
+      select: { rating: true },
     });
+
+    return onUpdate;
   }
 
   async deleteSuggestion(params: DeleteSuggestionParams): Promise<void> {

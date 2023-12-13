@@ -8,7 +8,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
-import { EditRating, GetRatingsParam } from './rating/models';
+import {
+  EditRating,
+  GetAllRatingsParam,
+  GetRatingsParam,
+} from './rating/models';
 import { RatingService } from './rating/rating.service';
 import {
   DeleteSuggestionParams,
@@ -56,8 +60,17 @@ export class AppController {
   }
 
   @Get('rating/user-ratings')
-  async getUserRatings(@Body() params: GetRatingsParam): Promise<void> {
-    this.ratingService.getUserRatings(params);
+  async getUserRatings(
+    @Body() params: GetRatingsParam,
+  ): Promise<Record<string, unknown>> {
+    return this.ratingService.getUserRatings(params);
+  }
+
+  @Get('rating')
+  async getRatings(
+    @Query() params: GetAllRatingsParam,
+  ): Promise<Record<string, unknown>> {
+    return this.ratingService.getRatings(params);
   }
 
   @Put('rating')
@@ -77,20 +90,20 @@ export class AppController {
   async insertSuggestion(
     @Body() params: Prisma.SuggestionCreateInput,
   ): Promise<void> {
-    this.suggestionService.insertSuggestion(params);
+    return this.suggestionService.insertSuggestion(params);
   }
 
   @Put('suggestion')
   async updateSuggestion(
     @Body() params: UpdateSuggestionParams,
-  ): Promise<void> {
-    this.suggestionService.updateSuggestion(params);
+  ): Promise<Record<string, unknown>> {
+    return this.suggestionService.updateSuggestion(params);
   }
 
   @Delete('suggestion')
   async deleteSuggestion(
     @Body() params: DeleteSuggestionParams,
   ): Promise<void> {
-    this.suggestionService.deleteSuggestion(params);
+    return this.suggestionService.deleteSuggestion(params);
   }
 }
