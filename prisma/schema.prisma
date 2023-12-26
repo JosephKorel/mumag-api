@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id                  Int          @id @default(autoincrement())
-  email               String       @unique
+  id                  Int               @id @default(autoincrement())
+  email               String            @unique
   name                String
-  avatarUrl           String       @default("")
-  genres              String       @default("")
-  backgroundUrl       String       @default("")
-  lastUpdatedAt       DateTime     @default(now())
+  avatarUrl           String            @default("")
+  genres              String            @default("")
+  backgroundUrl       String            @default("")
+  lastUpdatedAt       DateTime          @default(now())
   ratings             Rating[]
-  madeSuggestions     Suggestion[] @relation("suggestedTo")
-  receivedSuggestions Suggestion[] @relation("suggestedBy")
+  madeSuggestions     Suggestion[]      @relation("suggestedTo")
+  receivedSuggestions Suggestion[]      @relation("suggestedBy")
+  followers           SocialRelations[] @relation("followingId")
+  following           SocialRelations[] @relation("followerId")
 }
 
 model Rating {
@@ -40,4 +42,12 @@ model Suggestion {
   rating            Int?
   type              String
   createdAt         DateTime @default(now())
+}
+
+model SocialRelations {
+  id                Int   @id @default(autoincrement())
+  followerId        User? @relation("followerId", fields: [followerIdUserId], references: [id])
+  followerIdUserId  Int?
+  followingId       User? @relation("followingId", fields: [followingIdUserId], references: [id])
+  followingIdUserId Int?
 }

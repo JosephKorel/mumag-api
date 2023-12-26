@@ -5,10 +5,11 @@ import { PrismaService } from './prisma.service';
 import { RatingService } from './rating/rating.service';
 import { UserService } from './user/user.service';
 import { SuggestionService } from './suggestion/suggestion.service';
+import { SocialService } from './social/social.service';
 
 @Module({
   imports: [],
   controllers: [AppController],
-  providers: [AppService, UserService, PrismaService, RatingService, SuggestionService],
+  providers: [AppService, UserService, PrismaService, RatingService, SuggestionService, SocialService],
 })
 export class AppModule {}
