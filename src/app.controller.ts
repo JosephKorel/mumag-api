@@ -42,8 +42,13 @@ export class AppController {
   }
 
   @Put('user')
-  async updateUser(@Body() params: UpdateUser): Promise<User> {
-    return this.userService.updateUser(params);
+  async updateUser(@Body() params: UpdateUser): Promise<User | unknown> {
+    console.log('IM COMING HERE');
+    try {
+      return this.userService.updateUser(params);
+    } catch (error) {
+      return { error };
+    }
   }
 
   @Put('user/update-genres')

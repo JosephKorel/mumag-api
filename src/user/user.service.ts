@@ -32,9 +32,13 @@ export class UserService {
   }
 
   async updateUser(params: UpdateUser): Promise<User> {
+    const lastUpdatedAt = new Date(
+      params.params.lastUpdatedAt as string,
+    ).toISOString();
+
     const user = await this.prisma.user.update({
       where: { id: params.id },
-      data: params.params,
+      data: { ...params.params, lastUpdatedAt },
       select: {
         email: true,
         avatarUrl: true,
