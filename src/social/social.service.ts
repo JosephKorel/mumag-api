@@ -42,6 +42,7 @@ export class SocialService {
     const followingUsers: UserSimple[] = following.map((e) => ({
       ...e.followingId,
     }));
+
     const followerUsers: UserSimple[] = followers.map((e) => ({
       ...e.followerId,
     }));

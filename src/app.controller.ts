@@ -14,6 +14,9 @@ import {
   GetRatingsParam,
 } from './rating/models';
 import { RatingService } from './rating/rating.service';
+import { SearchUsersService } from './search-users/search-users.service';
+import { UserSimple } from './social/models/user-simple';
+import { SocialService } from './social/social.service';
 import {
   DeleteSuggestionParams,
   UpdateSuggestionParams,
@@ -28,6 +31,8 @@ export class AppController {
     private readonly userService: UserService,
     private readonly ratingService: RatingService,
     private readonly suggestionService: SuggestionService,
+    private readonly socialRelationsService: SocialService,
+    private readonly searchUsers: SearchUsersService,
   ) {}
 
   // User
@@ -43,7 +48,6 @@ export class AppController {
 
   @Put('user')
   async updateUser(@Body() params: UpdateUser): Promise<User | unknown> {
-    console.log('IM COMING HERE');
     try {
       return this.userService.updateUser(params);
     } catch (error) {
@@ -110,5 +114,29 @@ export class AppController {
     @Body() params: DeleteSuggestionParams,
   ): Promise<void> {
     return this.suggestionService.deleteSuggestion(params);
+  }
+
+  // Social Relations
+  @Post('social/follow')
+  async followUser(
+    @Body() params: Prisma.SocialRelationsCreateInput,
+  ): Promise<void> {
+    this.socialRelationsService.followUser(params);
+  }
+
+  @Get('social/relations')
+  async getSocialRelations(@Query() data: Record<string, number>) {
+    return this.socialRelationsService.getUserRelations(data['userId']);
+  }
+
+  @Delete('social/unfollow')
+  async unfollowUser(@Query() params: Prisma.SocialRelationsWhereInput) {
+    return this.socialRelationsService.unfollowUser(params);
+  }
+
+  // Search Users
+  @Get('search')
+  async search(@Query() params: Record<string, string>): Promise<UserSimple[]> {
+    return this.searchUsers.searchUser(params['name']);
   }
 }
