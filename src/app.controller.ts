@@ -41,6 +41,11 @@ export class AppController {
     return this.userService.insertUser(insertData);
   }
 
+  @Get('search/user')
+  async getUserById(@Query() params: Record<string, unknown>): Promise<User> {
+    return this.userService.getUserById(Number(params['id']));
+  }
+
   @Get('user')
   async getUser(@Query() params: Prisma.UserWhereUniqueInput): Promise<User> {
     return this.userService.getUser(params);
@@ -121,7 +126,7 @@ export class AppController {
   async followUser(
     @Body() params: Prisma.SocialRelationsCreateInput,
   ): Promise<void> {
-    this.socialRelationsService.followUser(params);
+    return this.socialRelationsService.followUser(params);
   }
 
   @Get('social/relations')
@@ -136,7 +141,14 @@ export class AppController {
 
   // Search Users
   @Get('search')
-  async search(@Query() params: Record<string, string>): Promise<UserSimple[]> {
-    return this.searchUsers.searchUser(params['name']);
+  async search(
+    @Query() params: Record<string, unknown>,
+  ): Promise<{ data: UserSimple[] }> {
+    const result = await this.searchUsers.searchUser(
+      params['name'] as string,
+      Number(params['limit']),
+    );
+
+    return { data: result };
   }
 }

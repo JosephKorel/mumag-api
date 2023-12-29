@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma.service';
 import { UserSimple } from './models/user-simple';
 
 @Injectable()
 export class SocialService {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async followUser(params: Prisma.SocialRelationsCreateInput) {
-    return this.prisma.socialRelations.create({ data: params });
+  async followUser(params: Prisma.SocialRelationsCreateInput): Promise<void> {
+    this.prisma.socialRelations.create({ data: params });
   }
 
   async getUserRelations(
@@ -21,6 +22,7 @@ export class SocialService {
             id: true,
             name: true,
             avatarUrl: true,
+            genres: true,
           },
         },
       },
@@ -34,6 +36,7 @@ export class SocialService {
             id: true,
             name: true,
             avatarUrl: true,
+            genres: true,
           },
         },
       },
@@ -41,10 +44,12 @@ export class SocialService {
 
     const followingUsers: UserSimple[] = following.map((e) => ({
       ...e.followingId,
+      genres: e.followingId.genres.split(','),
     }));
 
     const followerUsers: UserSimple[] = followers.map((e) => ({
       ...e.followerId,
+      genres: e.followerId.genres.split(','),
     }));
 
     return { following: followingUsers, followers: followerUsers };

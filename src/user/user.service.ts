@@ -13,6 +13,24 @@ export class UserService {
     });
   }
 
+  async getUserById(id: number): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        email: true,
+        avatarUrl: true,
+        genres: true,
+        id: true,
+        backgroundUrl: true,
+        name: true,
+        lastUpdatedAt: true,
+        ratings: true,
+      },
+    });
+
+    return user;
+  }
+
   async getUser(params: Prisma.UserWhereUniqueInput): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: { email: params.email },
