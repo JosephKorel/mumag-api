@@ -8,7 +8,7 @@ export class SocialService {
   constructor(private readonly prisma: PrismaService) {}
 
   async followUser(params: Prisma.SocialRelationsCreateInput): Promise<void> {
-    this.prisma.socialRelations.create({ data: params });
+    await this.prisma.socialRelations.create({ data: params });
   }
 
   async getUserRelations(
