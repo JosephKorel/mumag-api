@@ -15,7 +15,7 @@ import {
 } from './rating/models';
 import { RatingService } from './rating/rating.service';
 import { SearchUsersService } from './search-users/search-users.service';
-import { UserSimple } from './social/models/user-simple';
+import { FollowUserParams, UserSimple } from './social/models/user-simple';
 import { SocialService } from './social/social.service';
 import {
   DeleteSuggestionParams,
@@ -48,6 +48,7 @@ export class AppController {
 
   @Get('user')
   async getUser(@Query() params: Prisma.UserWhereUniqueInput): Promise<User> {
+    console.log('IM COMING HERE');
     return this.userService.getUser(params);
   }
 
@@ -123,9 +124,7 @@ export class AppController {
 
   // Social Relations
   @Post('social/follow')
-  async followUser(
-    @Body() params: Prisma.SocialRelationsCreateInput,
-  ): Promise<void> {
+  async followUser(@Body() params: FollowUserParams): Promise<void> {
     return this.socialRelationsService.followUser(params);
   }
 

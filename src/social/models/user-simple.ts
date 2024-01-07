@@ -4,3 +4,8 @@ export interface UserSimple {
   avatarUrl: string;
   genres: string[];
 }
+
+export interface FollowUserParams {
+  followingId: number;
+  followerId: number;
+}

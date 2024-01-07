@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
-import { UserSimple } from './models/user-simple';
+import { FollowUserParams, UserSimple } from './models/user-simple';
 
 @Injectable()
 export class SocialService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async followUser(params: Prisma.SocialRelationsCreateInput): Promise<void> {
-    await this.prisma.socialRelations.create({ data: params });
+  async followUser(params: FollowUserParams): Promise<void> {
+    await this.prisma.socialRelations.create({
+      data: {
+        followerIdUserId: params.followerId,
+        followingIdUserId: params.followingId,
+      },
+    });
   }
 
   async getUserRelations(
@@ -41,6 +46,8 @@ export class SocialService {
         },
       },
     });
+
+    console.log('THIS WAS THE FOLLOWER USERS', followers);
 
     const followingUsers: UserSimple[] = following.map((e) => ({
       ...e.followingId,

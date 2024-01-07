@@ -8,6 +8,7 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async insertUser(params: Prisma.UserCreateInput): Promise<User> {
+    console.log('USER IS BEING CREATED: ', params.name);
     return this.prisma.user.create({
       data: params,
     });
@@ -32,6 +33,8 @@ export class UserService {
   }
 
   async getUser(params: Prisma.UserWhereUniqueInput): Promise<User> {
+    console.log('USER IS BEING FETCHED: ', params.email);
+
     const user = await this.prisma.user.findUnique({
       where: { email: params.email },
       select: {
