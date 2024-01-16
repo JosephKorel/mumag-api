@@ -47,8 +47,6 @@ export class SocialService {
       },
     });
 
-    console.log('THIS WAS THE FOLLOWER USERS', followers);
-
     const followingUsers: UserSimple[] = following.map((e) => ({
       ...e.followingId,
       genres: e.followingId.genres.split(','),

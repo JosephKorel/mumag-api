@@ -1,10 +1,12 @@
 services:
-  api:
+  server:
     build:
       dockerfile: Dockerfile
       context: .
       # Only will build development stage from our dockerfile
       target: development
+    image: mumag-server-img
+    container_name: mumag-server
     env_file:
       - .env
     environment:

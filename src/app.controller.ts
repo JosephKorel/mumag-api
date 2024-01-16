@@ -130,7 +130,7 @@ export class AppController {
 
   @Get('social/relations')
   async getSocialRelations(@Query() data: Record<string, number>) {
-    return this.socialRelationsService.getUserRelations(data['userId']);
+    return this.socialRelationsService.getUserRelations(Number(data['userId']));
   }
 
   @Delete('social/unfollow')
