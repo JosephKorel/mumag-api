@@ -19,6 +19,7 @@ import { FollowUserParams, UserSimple } from './social/models/user-simple';
 import { SocialService } from './social/social.service';
 import {
   DeleteSuggestionParams,
+  InsertSuggestionParams,
   UpdateSuggestionParams,
 } from './suggestion/models';
 import { SuggestionService } from './suggestion/suggestion.service';
@@ -101,9 +102,29 @@ export class AppController {
   }
 
   // Suggestion
+  @Get('suggestion/sent-suggestions')
+  async getUserSuggestions(
+    @Body() params: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    const data = await this.suggestionService.getUserSuggestions(
+      params['userId'] as number,
+    );
+    return { data };
+  }
+
+  @Get('suggestion/received-suggestions')
+  async getReceivedSuggestions(
+    @Body() params: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
+    const data = await this.suggestionService.getUserReceivedSuggestions(
+      params['userId'] as number,
+    );
+    return { data };
+  }
+
   @Post('suggestion')
   async insertSuggestion(
-    @Body() params: Prisma.SuggestionCreateInput,
+    @Body() params: InsertSuggestionParams,
   ): Promise<void> {
     return this.suggestionService.insertSuggestion(params);
   }
