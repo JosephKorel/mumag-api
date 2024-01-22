@@ -43,6 +43,9 @@ export class SuggestionService {
   }
 
   async getUserSuggestions(userId: number): Promise<BaseSuggestion[]> {
+    console.log('THE USER ID IS: ', userId);
+    console.log(typeof userId == 'number');
+
     const fetchSuggestions = await this.prisma.suggestion.findMany({
       where: { suggestedByUserId: userId },
       select: {

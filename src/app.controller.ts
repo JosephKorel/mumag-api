@@ -104,20 +104,20 @@ export class AppController {
   // Suggestion
   @Get('suggestion/sent-suggestions')
   async getUserSuggestions(
-    @Body() params: Record<string, unknown>,
+    @Query() params: Record<string, unknown>,
   ): Promise<Record<string, unknown>> {
     const data = await this.suggestionService.getUserSuggestions(
-      params['userId'] as number,
+      Number(params['userId']),
     );
     return { data };
   }
 
   @Get('suggestion/received-suggestions')
   async getReceivedSuggestions(
-    @Body() params: Record<string, unknown>,
+    @Query() params: Record<string, unknown>,
   ): Promise<Record<string, unknown>> {
     const data = await this.suggestionService.getUserReceivedSuggestions(
-      params['userId'] as number,
+      Number(params['userId']),
     );
     return { data };
   }
