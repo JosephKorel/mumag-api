@@ -18,7 +18,6 @@ import { SearchUsersService } from './search-users/search-users.service';
 import { FollowUserParams, UserSimple } from './social/models/user-simple';
 import { SocialService } from './social/social.service';
 import {
-  DeleteSuggestionParams,
   InsertSuggestionParams,
   UpdateSuggestionParams,
 } from './suggestion/models';
@@ -49,7 +48,6 @@ export class AppController {
 
   @Get('user')
   async getUser(@Query() params: Prisma.UserWhereUniqueInput): Promise<User> {
-    console.log('IM COMING HERE');
     return this.userService.getUser(params);
   }
 
@@ -119,6 +117,7 @@ export class AppController {
     const data = await this.suggestionService.getUserReceivedSuggestions(
       Number(params['userId']),
     );
+
     return { data };
   }
 
@@ -127,6 +126,15 @@ export class AppController {
     @Body() params: InsertSuggestionParams,
   ): Promise<void> {
     return this.suggestionService.insertSuggestion(params);
+  }
+
+  @Post('suggestion/insert-many')
+  async insertManySuggestions(
+    @Body() params: Record<string, unknown>,
+  ): Promise<void> {
+    return this.suggestionService.insertManySuggestions(
+      params['data']['data'] as InsertSuggestionParams[],
+    );
   }
 
   @Put('suggestion')
@@ -138,9 +146,11 @@ export class AppController {
 
   @Delete('suggestion')
   async deleteSuggestion(
-    @Body() params: DeleteSuggestionParams,
+    @Query() params: Record<string, unknown>,
   ): Promise<void> {
-    return this.suggestionService.deleteSuggestion(params);
+    return this.suggestionService.deleteSuggestion(
+      Number(params['suggestionId']),
+    );
   }
 
   // Social Relations

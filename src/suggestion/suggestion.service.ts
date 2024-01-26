@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
   BaseSuggestion,
-  DeleteSuggestionParams,
   InsertSuggestionParams,
   UpdateSuggestionParams,
-  UserReceivedSuggestions,
-  UserSentSuggestions,
+  UserSuggestions,
 } from './models';
 
 @Injectable()
@@ -24,6 +22,17 @@ export class SuggestionService {
     });
   }
 
+  async insertManySuggestions(params: InsertSuggestionParams[]): Promise<void> {
+    await this.prisma.suggestion.createMany({
+      data: params.map((e) => ({
+        spotifyId: e.spotifyId,
+        suggestedByUserId: e.suggestedBy,
+        suggestedToUserId: e.suggestedTo,
+        type: e.type,
+      })),
+    });
+  }
+
   async updateSuggestion(
     params: UpdateSuggestionParams,
   ): Promise<Record<string, unknown>> {
@@ -36,16 +45,13 @@ export class SuggestionService {
     return onUpdate;
   }
 
-  async deleteSuggestion(params: DeleteSuggestionParams): Promise<void> {
+  async deleteSuggestion(suggestionId: number): Promise<void> {
     await this.prisma.suggestion.delete({
-      where: { id: params.suggestionId },
+      where: { id: suggestionId },
     });
   }
 
   async getUserSuggestions(userId: number): Promise<BaseSuggestion[]> {
-    console.log('THE USER ID IS: ', userId);
-    console.log(typeof userId == 'number');
-
     const fetchSuggestions = await this.prisma.suggestion.findMany({
       where: { suggestedByUserId: userId },
       select: {
@@ -58,12 +64,13 @@ export class SuggestionService {
       },
     });
 
-    return fetchSuggestions.map<UserSentSuggestions>((e) => ({
+    return fetchSuggestions.map<UserSuggestions>((e) => ({
       id: e.id,
       spotifyId: e.spotifyId,
       type: e.type,
       rating: e.rating,
-      sentTo: { name: e.suggestedTo.name, id: e.suggestedTo.id },
+      suggester: { name: e.suggestedTo.name, id: e.suggestedTo.id },
+      createdAt: e.createdAt,
     }));
   }
 
@@ -80,12 +87,13 @@ export class SuggestionService {
       },
     });
 
-    return fetchSuggestions.map<UserReceivedSuggestions>((e) => ({
+    return fetchSuggestions.map<UserSuggestions>((e) => ({
       id: e.id,
       spotifyId: e.spotifyId,
       type: e.type,
       rating: e.rating,
-      sentBy: { name: e.suggestedBy.name, id: e.suggestedBy.id },
+      suggester: { name: e.suggestedBy.name, id: e.suggestedBy.id },
+      createdAt: e.createdAt,
     }));
   }
 }

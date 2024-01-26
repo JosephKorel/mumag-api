@@ -19,12 +19,9 @@ export interface BaseSuggestion {
   type: string;
   spotifyId: string;
   rating: number;
+  createdAt: Date;
 }
 
-export interface UserReceivedSuggestions extends BaseSuggestion {
-  sentBy: { name: string; id: number };
-}
-
-export interface UserSentSuggestions extends BaseSuggestion {
-  sentTo: { name: string; id: number };
+export interface UserSuggestions extends BaseSuggestion {
+  suggester: { name: string; id: number };
 }

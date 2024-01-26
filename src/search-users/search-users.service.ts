@@ -8,7 +8,7 @@ export class SearchUsersService {
 
   async searchUser(name: string, take: number): Promise<UserSimple[]> {
     const result = await this.prisma.user.findMany({
-      where: { name: { contains: name } },
+      where: { name: { contains: name, mode: 'insensitive' } },
       select: {
         id: true,
         name: true,
