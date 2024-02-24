@@ -7,7 +7,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, SavedSongs, User } from '@prisma/client';
+import { FavoriteService } from './favorite/favorite.service';
 import {
   EditRating,
   GetAllRatingsParam,
@@ -33,6 +34,7 @@ export class AppController {
     private readonly suggestionService: SuggestionService,
     private readonly socialRelationsService: SocialService,
     private readonly searchUsers: SearchUsersService,
+    private readonly favoriteSongsService: FavoriteService,
   ) {}
 
   // User
@@ -124,7 +126,7 @@ export class AppController {
   @Post('suggestion')
   async insertSuggestion(
     @Body() params: InsertSuggestionParams,
-  ): Promise<void> {
+  ): Promise<Record<string, boolean>> {
     return this.suggestionService.insertSuggestion(params);
   }
 
@@ -138,10 +140,8 @@ export class AppController {
   }
 
   @Put('suggestion')
-  async updateSuggestion(
-    @Body() params: UpdateSuggestionParams,
-  ): Promise<Record<string, unknown>> {
-    return this.suggestionService.updateSuggestion(params);
+  async updateSuggestion(@Body() params: UpdateSuggestionParams) {
+    this.suggestionService.updateSuggestion(params);
   }
 
   @Delete('suggestion')
@@ -177,6 +177,27 @@ export class AppController {
     const result = await this.searchUsers.searchUser(
       params['name'] as string,
       Number(params['limit']),
+    );
+
+    return { data: result };
+  }
+
+  // Favorite Songs
+  @Post('favorite-songs')
+  async createMany(
+    @Body() params: Prisma.SavedSongsCreateInput[],
+  ): Promise<void> {
+    await this.favoriteSongsService.createMany(params);
+  }
+
+  @Get('favorite-songs')
+  async findMany(
+    @Query() userId: string,
+    limit: number,
+  ): Promise<{ data: SavedSongs[] }> {
+    const result = await this.favoriteSongsService.findMany(
+      Number(userId),
+      limit,
     );
 
     return { data: result };

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
+import { FavoriteService } from './favorite/favorite.service';
 import { PrismaService } from './prisma.service';
 import { RatingService } from './rating/rating.service';
 import { SearchUsersService } from './search-users/search-users.service';
@@ -9,9 +10,7 @@ import { SuggestionService } from './suggestion/suggestion.service';
 import { UserService } from './user/user.service';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-  ],
+  imports: [ConfigModule.forRoot()],
   controllers: [AppController],
   providers: [
     UserService,
@@ -20,6 +19,7 @@ import { UserService } from './user/user.service';
     SuggestionService,
     SocialService,
     SearchUsersService,
+    FavoriteService,
   ],
 })
 export class AppModule {}

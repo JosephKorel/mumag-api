@@ -11,7 +11,16 @@ import {
 export class SuggestionService {
   constructor(private prisma: PrismaService) {}
 
-  async insertSuggestion(params: InsertSuggestionParams): Promise<void> {
+  async insertSuggestion(params: InsertSuggestionParams): Promise<Record<string, boolean>> {
+    // Check if there's rating already
+    const hasRated = await this.prisma.rating.findFirst({
+      where: { authorId: params.suggestedTo, spotifyId: params.spotifyId },
+    });
+
+    if (hasRated) {
+      return {sent:false};
+    }
+
     await this.prisma.suggestion.create({
       data: {
         spotifyId: params.spotifyId,
@@ -20,6 +29,8 @@ export class SuggestionService {
         type: params.type,
       },
     });
+
+    return {sent:true};
   }
 
   async insertManySuggestions(params: InsertSuggestionParams[]): Promise<void> {
@@ -33,16 +44,30 @@ export class SuggestionService {
     });
   }
 
-  async updateSuggestion(
-    params: UpdateSuggestionParams,
-  ): Promise<Record<string, unknown>> {
-    const onUpdate = await this.prisma.suggestion.update({
+  async updateSuggestion(params: UpdateSuggestionParams) {
+    // Update suggestion object itself
+    await this.prisma.suggestion.update({
       where: { id: params.suggestionId },
       data: { rating: params.rating },
       select: { rating: true },
     });
 
-    return onUpdate;
+    // Check if there's rating already
+    const hasRated = await this.prisma.rating.findFirst({
+      where: { authorId: params.userId, spotifyId: params.spotifyId },
+    });
+
+    if (!hasRated) {
+      // Create rating for that media
+      await this.prisma.rating.create({
+        data: {
+          type: params.type,
+          rating: params.rating,
+          authorId: params.userId,
+          spotifyId: params.spotifyId,
+        },
+      });
+    }
   }
 
   async deleteSuggestion(suggestionId: number): Promise<void> {

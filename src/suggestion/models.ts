@@ -7,7 +7,10 @@ export interface InsertSuggestionParams {
 
 export interface UpdateSuggestionParams {
   suggestionId: number;
+  spotifyId: string;
+  type: string;
   rating: number;
+  userId: number;
 }
 
 export interface DeleteSuggestionParams {

@@ -17,10 +17,11 @@ model User {
   backgroundUrl       String            @default("")
   lastUpdatedAt       DateTime          @default(now())
   ratings             Rating[]
-  madeSuggestions     Suggestion[]      @relation("suggestedTo")
-  receivedSuggestions Suggestion[]      @relation("suggestedBy")
-  followers           SocialRelations[] @relation("followingId")
   following           SocialRelations[] @relation("followerId")
+  followers           SocialRelations[] @relation("followingId")
+  receivedSuggestions Suggestion[]      @relation("suggestedBy")
+  madeSuggestions     Suggestion[]      @relation("suggestedTo")
+  SavedSongs          SavedSongs[]
 }
 
 model Rating {
@@ -29,26 +30,38 @@ model Rating {
   spotifyId String
   rating    Int
   createdAt DateTime @default(now())
-  author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Suggestion {
   id                Int      @id @default(autoincrement())
-  suggestedBy       User?    @relation("suggestedBy", fields: [suggestedByUserId], references: [id])
   suggestedByUserId Int?
-  suggestedTo       User?    @relation("suggestedTo", fields: [suggestedToUserId], references: [id])
   suggestedToUserId Int?
   spotifyId         String
   rating            Int?
   type              String
   createdAt         DateTime @default(now())
+  suggestedBy       User?    @relation("suggestedBy", fields: [suggestedByUserId], references: [id], onDelete: Cascade)
+  suggestedTo       User?    @relation("suggestedTo", fields: [suggestedToUserId], references: [id], onDelete: Cascade)
 }
 
 model SocialRelations {
   id                Int   @id @default(autoincrement())
-  followerId        User? @relation("followerId", fields: [followerIdUserId], references: [id])
   followerIdUserId  Int?
-  followingId       User? @relation("followingId", fields: [followingIdUserId], references: [id])
   followingIdUserId Int?
+  followerId        User? @relation("followerId", fields: [followerIdUserId], references: [id], onDelete: Cascade)
+  followingId       User? @relation("followingId", fields: [followingIdUserId], references: [id], onDelete: Cascade)
+}
+
+model SavedSongs {
+  id        Int      @id @default(autoincrement())
+  authorId  User?    @relation(fields: [userId], references: [id])
+  spotifyId String
+  name      String
+  imageUrl  String
+  artists   Json
+  album     Json
+  addedAt   DateTime
+  userId    Int?
 }
