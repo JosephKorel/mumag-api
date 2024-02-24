@@ -8,7 +8,7 @@ export class SocialService {
   constructor(private readonly prisma: PrismaService) {}
 
   async followUser(params: FollowUserParams): Promise<void> {
-    await this.prisma.socialRelations.create({
+    await this.prisma.social_relations.create({
       data: {
         followerIdUserId: params.followerId,
         followingIdUserId: params.followingId,
@@ -19,7 +19,7 @@ export class SocialService {
   async getUserRelations(
     userId: number,
   ): Promise<{ following: UserSimple[]; followers: UserSimple[] }> {
-    const following = await this.prisma.socialRelations.findMany({
+    const following = await this.prisma.social_relations.findMany({
       where: { followerId: { id: userId } },
       select: {
         followingId: {
@@ -33,7 +33,7 @@ export class SocialService {
       },
     });
 
-    const followers = await this.prisma.socialRelations.findMany({
+    const followers = await this.prisma.social_relations.findMany({
       where: { followingId: { id: userId } },
       select: {
         followerId: {
@@ -60,9 +60,9 @@ export class SocialService {
     return { following: followingUsers, followers: followerUsers };
   }
 
-  async unfollowUser(params: Prisma.SocialRelationsWhereInput): Promise<void> {
+  async unfollowUser(params: Prisma.social_relationsWhereInput): Promise<void> {
     try {
-      await this.prisma.socialRelations.deleteMany({
+      await this.prisma.social_relations.deleteMany({
         where: {
           followerIdUserId: params.followerIdUserId,
           followingIdUserId: params.followingIdUserId,

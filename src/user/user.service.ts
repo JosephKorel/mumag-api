@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, user } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateGenreInput, UpdateUser } from './models';
 
@@ -7,13 +7,13 @@ import { UpdateGenreInput, UpdateUser } from './models';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async insertUser(params: Prisma.UserCreateInput): Promise<User> {
+  async insertUser(params: Prisma.userCreateInput): Promise<user> {
     return this.prisma.user.create({
       data: params,
     });
   }
 
-  async getUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<user> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
@@ -31,7 +31,7 @@ export class UserService {
     return user;
   }
 
-  async getUser(params: Prisma.UserWhereUniqueInput): Promise<User> {
+  async getUser(params: Prisma.userWhereUniqueInput): Promise<user> {
     const user = await this.prisma.user.findUnique({
       where: { email: params.email },
       select: {
@@ -49,7 +49,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(params: UpdateUser): Promise<User> {
+  async updateUser(params: UpdateUser): Promise<user> {
     const lastUpdatedAt = new Date(
       params.params.lastUpdatedAt as string,
     ).toISOString();

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Rating } from '@prisma/client';
+import { Prisma, rating } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { EditRating, GetAllRatingsParam, GetRatingsParam } from './models';
 
@@ -7,7 +7,7 @@ import { EditRating, GetAllRatingsParam, GetRatingsParam } from './models';
 export class RatingService {
   constructor(private prisma: PrismaService) {}
 
-  async addRating(params: Prisma.RatingCreateInput): Promise<Rating> {
+  async addRating(params: Prisma.ratingCreateInput): Promise<rating> {
     return this.prisma.rating.create({ data: params });
   }
 
@@ -38,7 +38,7 @@ export class RatingService {
     });
   }
 
-  async deleteRating(params: Prisma.RatingWhereUniqueInput): Promise<Rating> {
+  async deleteRating(params: Prisma.ratingWhereUniqueInput): Promise<rating> {
     return this.prisma.rating.delete({ where: { id: params.id } });
   }
 }

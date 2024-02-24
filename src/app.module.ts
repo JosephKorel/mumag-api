@@ -8,6 +8,7 @@ import { SearchUsersService } from './search-users/search-users.service';
 import { SocialService } from './social/social.service';
 import { SuggestionService } from './suggestion/suggestion.service';
 import { UserService } from './user/user.service';
+import { FavoriteTitlesService } from './favorite-titles/favorite-titles.service';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -20,6 +21,7 @@ import { UserService } from './user/user.service';
     SocialService,
     SearchUsersService,
     FavoriteService,
+    FavoriteTitlesService,
   ],
 })
 export class AppModule {}

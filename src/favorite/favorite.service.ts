@@ -1,35 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, SavedSongs } from '@prisma/client';
+import { Prisma, saved_songs } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class FavoriteService {
   constructor(private prisma: PrismaService) {}
 
-  async createMany(params: Prisma.SavedSongsCreateInput[]): Promise<void> {
+  async createManySongs(
+    params: Prisma.saved_songsCreateInput[],
+  ): Promise<void> {
     try {
-      await this.prisma.savedSongs.createMany({ data: params });
+      await this.prisma.saved_songs.createMany({ data: params });
     } catch (error) {
       throw error;
     }
   }
 
-  async findMany(userId: number, limit: number): Promise<SavedSongs[]> {
+  async findManySongs(userId: number, limit: number): Promise<saved_songs[]> {
     try {
-      const result = await this.prisma.savedSongs.findMany({
+      const result = await this.prisma.saved_songs.findMany({
         where: { userId },
-        select: {
-          addedAt: true,
-          album: true,
-          artists: true,
-          id: true,
-          imageUrl: true,
-          spotifyId: true,
-          name: true,
-          userId: true,
-        },
         take: limit,
-        orderBy: { addedAt: 'desc' },
+        orderBy: { index: 'desc' },
       });
 
       return result;

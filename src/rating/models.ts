@@ -8,6 +8,6 @@ export interface GetAllRatingsParam {
   spotifyId: string;
 }
 
-export interface EditRating extends Prisma.RatingUpdateInput {
+export interface EditRating extends Prisma.ratingUpdateInput {
   ratingId: number;
 }

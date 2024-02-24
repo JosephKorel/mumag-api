@@ -8,60 +8,65 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id                  Int               @id @default(autoincrement())
-  email               String            @unique
+model user {
+  id                  Int                @id(map: "User_pkey") @default(autoincrement())
+  email               String             @unique(map: "User_email_key")
   name                String
-  avatarUrl           String            @default("")
-  genres              String            @default("")
-  backgroundUrl       String            @default("")
-  lastUpdatedAt       DateTime          @default(now())
-  ratings             Rating[]
-  following           SocialRelations[] @relation("followerId")
-  followers           SocialRelations[] @relation("followingId")
-  receivedSuggestions Suggestion[]      @relation("suggestedBy")
-  madeSuggestions     Suggestion[]      @relation("suggestedTo")
-  SavedSongs          SavedSongs[]
+  avatarUrl           String             @default("")
+  genres              String             @default("")
+  backgroundUrl       String             @default("")
+  lastUpdatedAt       DateTime           @default(now())
+  ratings             rating[]
+  following           social_relations[] @relation("followerId")
+  followers           social_relations[] @relation("followingId")
+  receivedSuggestions suggestion[]       @relation("suggestedBy")
+  madeSuggestions     suggestion[]       @relation("suggestedTo")
 }
 
-model Rating {
-  id        Int      @id @default(autoincrement())
+model rating {
+  id        Int      @id(map: "Rating_pkey") @default(autoincrement())
   type      String
   spotifyId String
   rating    Int
   createdAt DateTime @default(now())
   authorId  Int?
-  author    User?    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    user?    @relation(fields: [authorId], references: [id], onDelete: Cascade, map: "Rating_authorId_fkey")
 }
 
-model Suggestion {
-  id                Int      @id @default(autoincrement())
+model suggestion {
+  id                Int      @id(map: "Suggestion_pkey") @default(autoincrement())
   suggestedByUserId Int?
   suggestedToUserId Int?
   spotifyId         String
   rating            Int?
   type              String
   createdAt         DateTime @default(now())
-  suggestedBy       User?    @relation("suggestedBy", fields: [suggestedByUserId], references: [id], onDelete: Cascade)
-  suggestedTo       User?    @relation("suggestedTo", fields: [suggestedToUserId], references: [id], onDelete: Cascade)
+  suggestedBy       user?    @relation("suggestedBy", fields: [suggestedByUserId], references: [id], onDelete: Cascade, map: "Suggestion_suggestedByUserId_fkey")
+  suggestedTo       user?    @relation("suggestedTo", fields: [suggestedToUserId], references: [id], onDelete: Cascade, map: "Suggestion_suggestedToUserId_fkey")
 }
 
-model SocialRelations {
-  id                Int   @id @default(autoincrement())
+model social_relations {
+  id                Int   @id(map: "SocialRelations_pkey") @default(autoincrement())
   followerIdUserId  Int?
   followingIdUserId Int?
-  followerId        User? @relation("followerId", fields: [followerIdUserId], references: [id], onDelete: Cascade)
-  followingId       User? @relation("followingId", fields: [followingIdUserId], references: [id], onDelete: Cascade)
+  followerId        user? @relation("followerId", fields: [followerIdUserId], references: [id], onDelete: Cascade, map: "SocialRelations_followerIdUserId_fkey")
+  followingId       user? @relation("followingId", fields: [followingIdUserId], references: [id], onDelete: Cascade, map: "SocialRelations_followingIdUserId_fkey")
 }
 
-model SavedSongs {
-  id        Int      @id @default(autoincrement())
-  authorId  User?    @relation(fields: [userId], references: [id])
+model favorite_titles {
+  id              Int    @id(map: "FavoriteTitles_pkey") @default(autoincrement())
+  favoriteSongs   String @default("My top 10 songs")
+  favoriteAlbums  String @default("My top 10 albums")
+  favoriteArtists String @default("My top 10 artists")
+}
+
+model saved_songs {
+  id        Int    @id(map: "SavedSongs_pkey") @default(autoincrement())
   spotifyId String
   name      String
   imageUrl  String
   artists   Json
   album     Json
-  addedAt   DateTime
-  userId    Int?
+  userId    Int
+  index     Int
 }
